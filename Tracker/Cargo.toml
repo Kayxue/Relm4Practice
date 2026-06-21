@@ -1,0 +1,10 @@
+[package]
+name = "tracker"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+gtk = { version = "0.11", package = "gtk4", features = ["v4_22"] }
+rand = "0.10.1"
+relm4 = "0.11"
+tracker = "0.2.2"
