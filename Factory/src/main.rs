@@ -37,55 +37,66 @@ impl FactoryComponent for Counter {
         #[root]
         Box{
             set_orientation: Orientation::Horizontal,
-            set_spacing: 10
-        },
+            set_spacing: 10,
 
-        #[name(label)]
-        Label{
-            #[watch]
-            set_label: &self.value.to_string(),
-            set_width_chars: 3
-        },
+            #[name(label)]
+            Label{
+                #[watch]
+                set_label: &self.value.to_string(),
+                set_width_chars: 3
+            },
 
-        #[name(add_button)]
-        Button{
-            set_label: "+",
-            connect_clicked => CounterMsg::Increment
-        },
+            #[name(add_button)]
+            Button{
+                set_label: "+",
+                connect_clicked => CounterMsg::Increment
+            },
 
-        #[name(remove_button)]
-        Button{
-            set_label: "-",
-            connect_clicked => CounterMsg::Decrement
-        },
+            #[name(remove_button)]
+            Button{
+                set_label: "-",
+                connect_clicked => CounterMsg::Decrement
+            },
 
-        #[name(move_up_button)]
-        Button{
-            set_label: "Up",
-            connect_clicked[sender, index] => move |_|{
-                sender.output(CounterOutput::MoveUp(index.clone())).unwrap();
-            }
-        },
+            #[name(move_up_button)]
+            Button{
+                set_label: "Up",
+                connect_clicked[sender, index] => move |_|{
+                    sender.output(CounterOutput::MoveUp(index.clone())).unwrap();
+                }
+            },
 
-        #[name(move_down_button)]
-        Button{
-            set_label: "Down",
-            connect_clicked[sender, index] => move |_|{
-                sender.output(CounterOutput::MoveDown(index.clone())).unwrap();
-            }
-        },
+            #[name(move_down_button)]
+            Button{
+                set_label: "Down",
+                connect_clicked[sender, index] => move |_|{
+                    sender.output(CounterOutput::MoveDown(index.clone())).unwrap();
+                }
+            },
 
-        #[name(to_front_button)]
-        Button{
-            set_label: "To Start",
-            connect_clicked[sender,index] => move |_|{
-                sender.output(CounterOutput::SendFront(index.clone())).unwrap();
+            #[name(to_front_button)]
+            Button{
+                set_label: "To Start",
+                connect_clicked[sender,index] => move |_|{
+                    sender.output(CounterOutput::SendFront(index.clone())).unwrap();
+                }
             }
         }
     }
 
     fn init_model(init: Self::Init, _index: &Self::Index, _sender: FactorySender<Self>) -> Self {
         Self { value: init }
+    }
+
+    fn update(&mut self, msg: Self::Input, _sender: FactorySender<Self>) {
+        match msg {
+            CounterMsg::Increment => {
+                self.value = self.value.wrapping_add(1);
+            }
+            CounterMsg::Decrement => {
+                self.value = self.value.wrapping_sub(1);
+            }
+        }
     }
 }
 
